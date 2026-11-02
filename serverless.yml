@@ -1,0 +1,42 @@
+service: taller-s11-s3
+
+# Si tu profesor te dio un org, agregalo aqui (org: TU_ORG)
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-east-1
+  stage: dev
+  memorySize: 256
+  timeout: 15
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:CreateBucket
+          Resource: arn:aws:s3:::taller11-*
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource: arn:aws:s3:::taller11-*/*
+
+functions:
+  crear_bucket:
+    handler: handler.crear_bucket
+    events:
+      - http:
+          path: s3/crear-bucket
+          method: post
+  crear_directorio:
+    handler: handler.crear_directorio
+    events:
+      - http:
+          path: s3/crear-directorio
+          method: post
+  subir_archivo:
+    handler: handler.subir_archivo
+    events:
+      - http:
+          path: s3/subir-archivo
+          method: post
