@@ -1,25 +1,16 @@
-service: taller-s11-s3
 
-# Si tu profesor te dio un org, agregalo aqui (org: TU_ORG)
+org: luissanchezr
+service: api-s3-taller11
 
 provider:
   name: aws
   runtime: python3.12
   region: us-east-1
   stage: dev
-  memorySize: 256
-  timeout: 15
+  memorySize: 1024
+  timeout: 30
   iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - s3:CreateBucket
-          Resource: arn:aws:s3:::taller11-*
-        - Effect: Allow
-          Action:
-            - s3:PutObject
-          Resource: arn:aws:s3:::taller11-*/*
+    role: arn:aws:iam::715081672185:role/LabRole
 
 functions:
   crear_bucket:
@@ -28,15 +19,20 @@ functions:
       - http:
           path: s3/crear-bucket
           method: post
+          cors: true
+
   crear_directorio:
     handler: handler.crear_directorio
     events:
       - http:
           path: s3/crear-directorio
           method: post
+          cors: true
+
   subir_archivo:
     handler: handler.subir_archivo
     events:
       - http:
           path: s3/subir-archivo
           method: post
+          cors: true
